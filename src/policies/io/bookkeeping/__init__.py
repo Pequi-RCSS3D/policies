@@ -9,6 +9,8 @@ from policies.io.bookkeeping.gravity import Gravity, GravityConfig
 from policies.io.bookkeeping.gyroscope_unit import GyroscopeUnit
 from policies.io.bookkeeping.history import History
 from policies.io.bookkeeping.last import Last
+from policies.io.bookkeeping.legendre import Legendre, LegendreConfig
+from policies.io.bookkeeping.legendre_reset import LegendreReset
 from policies.io.bookkeeping.timer import Timer
 
 __all__ = [
@@ -18,6 +20,9 @@ __all__ = [
     "GyroscopeUnit",
     "History",
     "Last",
+    "Legendre",
+    "LegendreConfig",
+    "LegendreReset",
     "Timer",
     "Tracker",
     "TrackerConfig",
