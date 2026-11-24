@@ -15,8 +15,6 @@ concurrency:
 jobs:
   python:
     uses: Pequi-RCSS3D/.github/.github/workflows/python-ci.yml@main
-  python-torch:
-    uses: Pequi-RCSS3D/.github/.github/workflows/python-ci.yml@main
     with:
       sync-args: --extra cpu
   pr-title:
