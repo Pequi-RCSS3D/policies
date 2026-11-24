@@ -1,0 +1,8 @@
+# Managed by Copier. Do not edit. Run `uvx copier update` instead.
+_commit: 1d42d9f
+_src_path: gh:Pequi-RCSS3D/python-template
+description: Shared policy model definitions and observation and action contracts
+    for our agents.
+package_name: policy_models
+project_name: policy-models
+python_version: '3.12'

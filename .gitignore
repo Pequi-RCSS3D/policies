@@ -1,0 +1,11 @@
+__pycache__/
+.venv/
+.env
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+dist/
+
+# Data and training outputs stay out of git
+data/
+runs/
