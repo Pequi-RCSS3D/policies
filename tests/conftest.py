@@ -27,7 +27,7 @@ def make(request: pytest.FixtureRequest) -> Make:
     return _numpy
 
 
-TORCH_ONLY = ["learning/*", "models/*", "training/test_trainer.py"]
+TORCH_ONLY = ["learning/*", "models/*", "training/test_trainer.py", "test_dogfood.py"]
 """Test modules that need the torch extra, skipped at collection without it."""
 
 collect_ignore_glob = [] if importlib.util.find_spec("torch") else TORCH_ONLY
