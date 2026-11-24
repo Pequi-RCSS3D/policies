@@ -17,6 +17,13 @@ dependencies = [
   "structlog>=26.1",
 ]
 
+[project.entry-points."policies.registries"]
+# Every registry, so tools list one without importing the others.
+distributions = "policies.io.outputs.distributions:distributions"
+kinds = "policies.io.outputs.kinds:kinds"
+trackers = "policies.io.bookkeeping:trackers"
+transforms = "policies.io.inputs.transforms:transforms"
+
 [project.optional-dependencies]
 # PyTorch for models, learning, training and export. Pick one.
 cpu = ["torch>=2.14,<2.15"]
