@@ -38,8 +38,8 @@ transforms = "policies.io.inputs.transforms:transforms"
 
 [project.optional-dependencies]
 # PyTorch for models, learning, training and export. Pick one.
-cpu = ["torch>=2.14,<2.15"]
-cu126 = ["torch>=2.14,<2.15"]
+cpu = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
+cu126 = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
 # Hugging Face Hub as an artifact registry root (hf://).
 hub = ["huggingface_hub>=1.13"]
 # The tensorboard monitoring hook.
