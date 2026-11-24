@@ -9,7 +9,7 @@ import policies
 
 ROOT = Path(policies.__file__).parent
 
-TORCH: tuple[str, ...] = ()
+TORCH = ("models",)
 """Subpackages that need the torch extra, along with everything inside them."""
 
 

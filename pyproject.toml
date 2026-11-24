@@ -19,8 +19,13 @@ dependencies = [
 
 [project.entry-points."policies.registries"]
 # Every registry, so tools list one without importing the others.
+activations = "policies.spec.model.activations:activations"
+blocks = "policies.spec.model.blocks:blocks"
 distributions = "policies.io.outputs.distributions:distributions"
+encoders = "policies.spec.model.encoders:encoders"
+heads = "policies.spec.model.heads:heads"
 kinds = "policies.io.outputs.kinds:kinds"
+models = "policies.spec.model:models"
 trackers = "policies.io.bookkeeping:trackers"
 transforms = "policies.io.inputs.transforms:transforms"
 
