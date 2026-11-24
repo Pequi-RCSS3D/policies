@@ -1,3 +1,4 @@
+import importlib.util
 from collections.abc import Callable
 from typing import Any
 
@@ -24,3 +25,9 @@ def make(request: pytest.FixtureRequest) -> Make:
         pytest.importorskip("torch")
         return _torch
     return _numpy
+
+
+TORCH_ONLY = ["learning/*"]
+"""Test modules that need the torch extra, skipped at collection without it."""
+
+collect_ignore_glob = [] if importlib.util.find_spec("torch") else TORCH_ONLY
