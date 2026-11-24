@@ -24,6 +24,7 @@ blocks = "policies.spec.model.blocks:blocks"
 distributions = "policies.io.outputs.distributions:distributions"
 encoders = "policies.spec.model.encoders:encoders"
 heads = "policies.spec.model.heads:heads"
+hooks = "policies.training.monitoring.hooks:hooks"
 kinds = "policies.io.outputs.kinds:kinds"
 models = "policies.spec.model:models"
 trackers = "policies.io.bookkeeping:trackers"
@@ -33,9 +34,13 @@ transforms = "policies.io.inputs.transforms:transforms"
 # PyTorch for models, learning, training and export. Pick one.
 cpu = ["torch>=2.14,<2.15"]
 cu126 = ["torch>=2.14,<2.15"]
+# The tensorboard monitoring hook.
+tensorboard = ["tensorboard>=2.18"]
 
 [dependency-groups]
+# Optional backends, so they are type checked and tested.
 dev = [
+    "tensorboard>=2.18",
     "mypy",
     "pre-commit",
     "pytest",
