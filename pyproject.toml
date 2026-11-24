@@ -16,8 +16,12 @@ dependencies = [
   "onnxruntime>=1.20",
   "pydantic>=2.9",
   "pyyaml>=6.0",
+  "rich>=13.7",
   "structlog>=26.1",
 ]
+
+[project.scripts]
+pm = "policies.cli.main:main"
 
 [project.entry-points."policies.registries"]
 # Every registry, so tools list one without importing the others.
