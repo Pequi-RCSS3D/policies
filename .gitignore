@@ -7,5 +7,5 @@ __pycache__/
 dist/
 
 # Data and training outputs stay out of git
-data/
-runs/
+/data/
+/runs/

@@ -15,6 +15,8 @@ concurrency:
 jobs:
   python:
     uses: Pequi-RCSS3D/.github/.github/workflows/python-ci.yml@main
+    with:
+      sync-args: --extra cpu
   pr-title:
     if: github.event_name == 'pull_request'
     uses: Pequi-RCSS3D/.github/.github/workflows/pr-title.yml@main

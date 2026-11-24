@@ -3,19 +3,87 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "policy-models"
+name = "policies"
 version = "0.1.0"
-description = "Shared policy model definitions and observation and action contracts for our agents."
+description = "Define, train, export and run part-based policies, extensible through plugins."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+  "array-api-compat>=1.11",
+  "fsspec>=2024.6",
+  "numpy>=2.0",
+  "onnxruntime>=1.20",
+  "pydantic>=2.9",
+  "pyyaml>=6.0",
+  "rich>=13.7",
+  "structlog>=26.1",
+]
+
+[project.scripts]
+pm = "policies.cli.main:main"
+
+[project.entry-points."policies.registries"]
+# Every registry, so tools list one without importing the others.
+activations = "policies.spec.model.activations:activations"
+blocks = "policies.spec.model.blocks:blocks"
+distributions = "policies.io.outputs.distributions:distributions"
+encoders = "policies.spec.model.encoders:encoders"
+heads = "policies.spec.model.heads:heads"
+hooks = "policies.training.monitoring.hooks:hooks"
+kinds = "policies.io.outputs.kinds:kinds"
+models = "policies.spec.model:models"
+objectives = "policies.learning.objectives:objectives"
+optimizers = "policies.learning.optimizers:optimizers"
+schedules = "policies.learning.schedules:schedules"
+storages = "policies.deploy.registry.storage:storages"
+trackers = "policies.io.bookkeeping:trackers"
+transforms = "policies.io.inputs.transforms:transforms"
+wrappers = "policies.training.envs.wrappers:wrappers"
+
+[project.optional-dependencies]
+# PyTorch for models, learning, training and export. Pick one.
+cpu = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
+cu126 = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
+# Hugging Face Hub as an artifact registry root (hf://).
+hub = ["huggingface_hub>=1.13"]
+# Gymnasium vector environments as training environments.
+gym = ["gymnasium>=1.1"]
+# The tensorboard monitoring hook.
+tensorboard = ["tensorboard>=2.18"]
 
 [dependency-groups]
-dev = ["mypy", "pre-commit", "pytest", "ruff"]
+# Optional backends, so they are type checked and tested.
+dev = [
+    "gymnasium>=1.1",
+    "huggingface_hub>=1.13",
+    "tensorboard>=2.18",
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "ruff",
+    "types-pyyaml",
+]
 
 [tool.uv]
 required-version = ">=0.9"
+conflicts = [[{ extra = "cpu" }, { extra = "cu126" }]]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu126", extra = "cu126" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
 
 [tool.ruff]
 line-length = 100
@@ -25,8 +93,14 @@ select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "RET", "PTH", "RUF"]
 
 [tool.mypy]
 strict = true
+plugins = ["pydantic.mypy"]
 warn_unreachable = true
 files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+# onnxruntime ships no type stubs.
+module = ["onnxruntime", "onnxruntime.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
