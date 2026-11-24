@@ -11,7 +11,9 @@ license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
   "array-api-compat>=1.11",
+  "fsspec>=2024.6",
   "numpy>=2.0",
+  "onnxruntime>=1.20",
   "pydantic>=2.9",
   "pyyaml>=6.0",
   "structlog>=26.1",
@@ -27,6 +29,7 @@ heads = "policies.spec.model.heads:heads"
 hooks = "policies.training.monitoring.hooks:hooks"
 kinds = "policies.io.outputs.kinds:kinds"
 models = "policies.spec.model:models"
+storages = "policies.deploy.registry.storage:storages"
 trackers = "policies.io.bookkeeping:trackers"
 transforms = "policies.io.inputs.transforms:transforms"
 
@@ -34,12 +37,15 @@ transforms = "policies.io.inputs.transforms:transforms"
 # PyTorch for models, learning, training and export. Pick one.
 cpu = ["torch>=2.14,<2.15"]
 cu126 = ["torch>=2.14,<2.15"]
+# Hugging Face Hub as an artifact registry root (hf://).
+hub = ["huggingface_hub>=1.13"]
 # The tensorboard monitoring hook.
 tensorboard = ["tensorboard>=2.18"]
 
 [dependency-groups]
 # Optional backends, so they are type checked and tested.
 dev = [
+    "huggingface_hub>=1.13",
     "tensorboard>=2.18",
     "mypy",
     "pre-commit",
@@ -79,6 +85,11 @@ strict = true
 plugins = ["pydantic.mypy"]
 warn_unreachable = true
 files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+# onnxruntime ships no type stubs.
+module = ["onnxruntime", "onnxruntime.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
