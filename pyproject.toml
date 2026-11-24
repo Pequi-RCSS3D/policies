@@ -35,6 +35,7 @@ schedules = "policies.learning.schedules:schedules"
 storages = "policies.deploy.registry.storage:storages"
 trackers = "policies.io.bookkeeping:trackers"
 transforms = "policies.io.inputs.transforms:transforms"
+wrappers = "policies.training.envs.wrappers:wrappers"
 
 [project.optional-dependencies]
 # PyTorch for models, learning, training and export. Pick one.
@@ -42,12 +43,15 @@ cpu = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
 cu126 = ["torch>=2.14,<2.15", "onnx>=1.17", "onnxscript>=0.2"]
 # Hugging Face Hub as an artifact registry root (hf://).
 hub = ["huggingface_hub>=1.13"]
+# Gymnasium vector environments as training environments.
+gym = ["gymnasium>=1.1"]
 # The tensorboard monitoring hook.
 tensorboard = ["tensorboard>=2.18"]
 
 [dependency-groups]
 # Optional backends, so they are type checked and tested.
 dev = [
+    "gymnasium>=1.1",
     "huggingface_hub>=1.13",
     "tensorboard>=2.18",
     "mypy",
