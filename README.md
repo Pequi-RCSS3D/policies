@@ -1,14 +1,15 @@
-# policy-models
+# policies
 
-Shared policy model definitions and observation and action contracts for our agents.
+Define, train, export and run part-based policies, extensible through plugins.
 
-## Setup
+## Development
 
 ```bash
-uv sync
+uv sync --extra cpu
 uv run pre-commit install
+uv run --locked pytest -q
 ```
 
 See the organization's
-[CONTRIBUTING.md](https://github.com/Pequi-RCSS3D/.github/blob/main/CONTRIBUTING.md) for how we
-work.
+[CONTRIBUTING.md](https://github.com/Pequi-RCSS3D/.github/blob/main/CONTRIBUTING.md) for how to
+work here.

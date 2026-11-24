@@ -3,19 +3,46 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "policy-models"
+name = "policies"
 version = "0.1.0"
-description = "Shared policy model definitions and observation and action contracts for our agents."
+description = "Define, train, export and run part-based policies, extensible through plugins."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = []
 
+[project.optional-dependencies]
+# PyTorch for models, learning, training and export. Pick one.
+cpu = ["torch>=2.14,<2.15"]
+cu126 = ["torch>=2.14,<2.15"]
+
 [dependency-groups]
-dev = ["mypy", "pre-commit", "pytest", "ruff"]
+dev = [
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "ruff",
+]
 
 [tool.uv]
 required-version = ">=0.9"
+conflicts = [[{ extra = "cpu" }, { extra = "cu126" }]]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu126", extra = "cu126" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
 
 [tool.ruff]
 line-length = 100
