@@ -5,12 +5,17 @@ from policies.io.bookkeeping.base import Tracker, TrackerConfig, TrackerContext,
 from policies.io.bookkeeping.build import build_bookkeeping
 from policies.io.bookkeeping.compose import Compose
 from policies.io.bookkeeping.errors import UnknownSourceError
+from policies.io.bookkeeping.gravity import Gravity, GravityConfig
+from policies.io.bookkeeping.gyroscope_unit import GyroscopeUnit
 from policies.io.bookkeeping.history import History
 from policies.io.bookkeeping.last import Last
 from policies.io.bookkeeping.timer import Timer
 
 __all__ = [
     "Compose",
+    "Gravity",
+    "GravityConfig",
+    "GyroscopeUnit",
     "History",
     "Last",
     "Timer",

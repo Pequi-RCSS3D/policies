@@ -188,11 +188,12 @@ Trackers expose state as slots that inputs read like observations, and reset wit
 They run on PyTorch while training and on NumPy at inference. Sources are observation keys or
 output parts.
 
-| Tracker   | Config           | Slot               | Value                                                  |
-| --------- | ---------------- | ------------------ | ------------------------------------------------------ |
-| `history` | `source, length` | `history.<source>` | The last `length` values, oldest first                 |
-| `last`    | `source`         | `last.<source>`    | The output part's previous action, zeros after a reset |
-| `timer`   | `name, dt`       | `timer.<name>`     | Steps since the reset times `dt`, shape `[1]`          |
+| Tracker   | Config                                                     | Slot               | Value                                                  |
+| --------- | ---------------------------------------------------------- | ------------------ | ------------------------------------------------------ |
+| `history` | `source, length`                                           | `history.<source>` | The last `length` values, oldest first                 |
+| `last`    | `source`                                                   | `last.<source>`    | The output part's previous action, zeros after a reset |
+| `timer`   | `name, dt`                                                 | `timer.<name>`     | Steps since the reset times `dt`, shape `[1]`          |
+| `gravity` | `gyroscope, accelerometer, dt, gain, gyroscope_unit, name` | `gravity.<name>`   | Body-frame unit gravity from the IMU (Mahony), `[3]`   |
 
 ### Model
 
