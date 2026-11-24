@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    uses: Pequi-RCSS3D/.github/.github/workflows/python-ci.yml@main
+  python-torch:
+    uses: Pequi-RCSS3D/.github/.github/workflows/python-ci.yml@main
+    with:
+      sync-args: --extra cpu
+  pr-title:
+    if: github.event_name == 'pull_request'
+    uses: Pequi-RCSS3D/.github/.github/workflows/pr-title.yml@main
