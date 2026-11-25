@@ -176,9 +176,27 @@ outputs:
 
 Distributions: `normal` (learned state-independent log standard deviation, `initial_std`),
 `normal_state_std` (the model outputs the standard deviation too, `initial_std`, `min_std`),
-`bernoulli`, `categorical` and `multi_categorical`. A `distribution` without `type`, or with the
-default's, updates the default. Another `type` replaces it. Training samples, inference takes the
-mode.
+`gsde` (smooth exploration, below), `bernoulli`, `categorical` and `multi_categorical`. A
+`distribution` without `type`, or with the default's, updates the default. Another `type` replaces
+it. Training samples, inference takes the mode.
+
+`gsde` is generalized state-dependent exploration
+([Raffin et al., 2021](https://arxiv.org/abs/2005.05719)), as in Stable-Baselines3. The model
+outputs the mean and `latent` features `z`. While training, each environment adds `z @ noise`,
+where `noise` is a `[latent, size]` matrix of `N(0, std**2)` entries held for `sample_every` steps
+and redrawn at episode starts. Exploration is then smooth in time and vanishes where `z` does.
+Log-probs, entropy and KL use the per-step Gaussian of variance `sum_i z_i**2 * std_ij**2`. Export
+and inference use the mean.
+
+```yaml
+distribution: {type: gsde, latent: 64, sample_every: 4, full_std: true, initial_std: 2.5}
+```
+
+`full_std: false` learns one `std` per feature. `learn_features: true` lets log-prob gradients
+reach `z`, which are detached by default. The initial action std is `initial_std * |z|`, where
+`|z|` is the features' norm. With the default `mlp` block and `linear` head, `|z|` starts near
+`0.02`, so an initial action std of `0.05` takes `initial_std: 2.5`. For another model, measure
+`|z|` on a few observations from `Actor.raw`, the last `latent` values of the part.
 
 ### Bookkeeping
 
@@ -539,6 +557,8 @@ as `factory(config, **context)`:
   registries.
 - Accept `**_` for context you do not use.
 - Namespace names, as in `my_package.mirror`.
+- A distribution may have `noise(batch, device)`, a `Noise` with `sample(raw, learned)` and
+  `reset(done)`, which training samples from in place of independent draws.
 - A kind may have `extras(action, xp)`, named per-step values beside the decoded one, such as
   controller gains, which `Policy.act` returns.
 - A tracker's `sources` must name every observation and output it reads, since artifacts record

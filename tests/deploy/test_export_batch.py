@@ -54,6 +54,11 @@ OUTPUTS: dict[str, tuple[dict[str, Any], tuple[int, ...], str]] = {
         (),
         "float32",
     ),
+    "gsde": (
+        {"kind": {"type": "continuous", "size": 3}, "distribution": {"type": "gsde", "latent": 4}},
+        (3,),
+        "float32",
+    ),
     "categorical": ({"kind": {"type": "categorical", "choices": ["a", "b", "c"]}}, (), "int64"),
     "bernoulli": ({"kind": {"type": "binary", "size": 3}}, (3,), "float32"),
     "multi_categorical": (

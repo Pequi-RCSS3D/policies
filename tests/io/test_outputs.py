@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from collections.abc import Callable, Iterator, Mapping
 from contextlib import contextmanager
 from typing import Any
@@ -179,3 +181,21 @@ def test_parts_by_name_and_kind_type() -> None:
     assert OUTPUTS["skill"].kind_type == "categorical"
     with pytest.raises(KeyError, match="no output part 'nope'"):
         OUTPUTS["nope"]
+
+
+GSDE_WITHOUT_TORCH = """
+import sys
+import numpy as np
+sys.modules["torch"] = None  # makes importing torch fail
+from policies.io.outputs import OutputDecoder, Outputs
+part = {"name": "a", "kind": {"type": "continuous", "size": 2}, "distribution": {"type": "gsde"}}
+decoder = OutputDecoder(Outputs.model_validate({"parts": [part]}))
+raw = np.arange(2 + 64, dtype=np.float32)[None]
+assert decoder.distributions["a"].raw_size == 66
+assert decoder.mode({"a": raw})["a"].tolist() == [[0.0, 1.0]]
+"""
+
+
+def test_gsde_builds_and_takes_its_mode_without_torch() -> None:
+    result = subprocess.run([sys.executable, "-c", GSDE_WITHOUT_TORCH], capture_output=True)
+    assert result.returncode == 0, result.stderr.decode()

@@ -113,6 +113,8 @@ class Learner:
         self.critic_state: State = (
             {} if self.critic is None else self.critic.model.initial_state((num_envs,), self.device)
         )
+        self.noise = self.actor.head.noise(num_envs, self.device)
+        """Exploration noise state per output part that has one."""
         self.reset = torch.zeros(num_envs, dtype=torch.bool, device=self.device)
         """Environments whose episode starts with the next observation."""
         self.next_observation: Mapping[str, Tensor] | None = None
@@ -201,7 +203,7 @@ class Learner:
         if self.training:
             self.actor.normalizer.update(parts)
         distribution, actor_state = self.actor(parts, self.actor_state)
-        actions = distribution.sample() if self.training else distribution.mode()
+        actions = distribution.sample(self.noise) if self.training else distribution.mode()
         if self.training:
             context = ActContext(observation, actions, self.reset)
             self.rollout.record(
@@ -258,6 +260,8 @@ class Learner:
             self.rollout.complete(rewards, dones)
         assert self.bookkeeping is not None
         self.bookkeeping.reset(dones)
+        for noise in self.noise.values():
+            noise.reset(dones)
         keep = (~dones).float()
         self.actor_state = {k: mask(v, keep) for k, v in self.actor_state.items()}
         self.critic_state = {k: mask(v, keep) for k, v in self.critic_state.items()}

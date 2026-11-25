@@ -6,7 +6,7 @@ import array_api_compat.torch as torch_xp
 from torch import Tensor
 from torch.distributions import kl_divergence
 
-from policies.io.outputs import Distribution
+from policies.io.outputs import Distribution, Noise
 
 
 class PartDistribution:
@@ -15,11 +15,12 @@ class PartDistribution:
     def __init__(
         self, definition: Distribution, raw: Tensor, learned: Mapping[str, Tensor]
     ) -> None:
-        self.definition, self.raw = definition, raw
+        self.definition, self.raw, self.learned = definition, raw, learned
         self.torch = definition.torch_distribution(raw, learned)
 
-    def sample(self) -> Tensor:
-        return self.torch.sample()
+    def sample(self, noise: Noise | None = None) -> Tensor:
+        """From `noise` if given, else an independent draw."""
+        return self.torch.sample() if noise is None else noise.sample(self.raw, self.learned)
 
     def mode(self) -> Tensor:
         """The same function inference runs on NumPy."""
