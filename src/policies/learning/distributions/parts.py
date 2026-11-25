@@ -5,6 +5,7 @@ from collections.abc import Mapping
 import torch
 from torch import Tensor
 
+from policies.io.outputs import Noise
 from policies.learning.distributions.part import PartDistribution
 
 
@@ -14,8 +15,10 @@ class PartsDistribution:
     def __init__(self, parts: Mapping[str, PartDistribution]) -> None:
         self.parts = dict(parts)
 
-    def sample(self) -> dict[str, Tensor]:
-        return {name: part.sample() for name, part in self.parts.items()}
+    def sample(self, noise: Mapping[str, Noise] | None = None) -> dict[str, Tensor]:
+        """Parts in `noise` sample from their noise state, others independently."""
+        noise = noise or {}
+        return {name: part.sample(noise.get(name)) for name, part in self.parts.items()}
 
     def mode(self) -> dict[str, Tensor]:
         return {name: part.mode() for name, part in self.parts.items()}

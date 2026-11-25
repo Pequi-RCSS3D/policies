@@ -12,11 +12,13 @@ CASES: dict[str, tuple[dict[str, Any], tuple[int, ...]]] = {
     "normal": ({"type": "normal", "initial_std": 0.8}, (2, 3)),
     "normal_scalar": ({"type": "normal"}, ()),
     "normal_state_std": ({"type": "normal_state_std", "initial_std": 0.7}, (3,)),
+    "gsde": ({"type": "gsde", "latent": 4, "initial_std": 0.6}, (2, 3)),
+    "gsde_scalar": ({"type": "gsde", "latent": 3, "full_std": False}, ()),
     "categorical": ({"type": "categorical", "choices": 4}, ()),
     "bernoulli": ({"type": "bernoulli"}, (2, 2)),
     "multi_categorical": ({"type": "multi_categorical", "choices": [2, 3, 4]}, (3,)),
 }
-CONTINUOUS = {"normal", "normal_scalar", "normal_state_std"}
+CONTINUOUS = {"normal", "normal_scalar", "normal_state_std", "gsde", "gsde_scalar"}
 BATCH = 5
 
 

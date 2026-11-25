@@ -1,7 +1,7 @@
 """The distribution contract and registry."""
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Annotated, Any, Protocol
+from typing import TYPE_CHECKING, Annotated, Any, Protocol, runtime_checkable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -48,6 +48,30 @@ class Distribution(Protocol):
 
     def smoothness(self, distribution: "TorchDistribution", previous: "Tensor") -> "Tensor | None":
         """Per-sample penalty for changing from the previous action, or None if not applicable."""
+        ...
+
+
+class Noise(Protocol):
+    """Exploration noise that persists across steps, one state per environment."""
+
+    def sample(self, raw: "Tensor", learned: Mapping[str, "Tensor"]) -> "Tensor":
+        """This step's actions `(batch, *shape)` from raw outputs `(batch, raw_size)`."""
+        ...
+
+    def reset(self, done: "Tensor") -> None:
+        """Restarts the noise of environments where `done`, of shape `(batch,)`, holds."""
+        ...
+
+
+@runtime_checkable
+class DistributionWithNoise(Protocol):
+    """A distribution whose training samples come from stateful `Noise`, not independent draws.
+
+    Log-probs, entropy and KL still come from `torch_distribution`, the per-step marginal.
+    """
+
+    def noise(self, batch: int, device: Any) -> Noise:
+        """Fresh noise state for `batch` environments."""
         ...
 
 

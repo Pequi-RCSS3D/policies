@@ -1,12 +1,12 @@
 """Learned distribution parameters, and distributions built from raw outputs."""
 
 from collections.abc import Mapping
-from typing import cast
+from typing import Any, cast
 
 import torch
 from torch import Tensor, nn
 
-from policies.io.outputs import Distribution
+from policies.io.outputs import Distribution, DistributionWithNoise, Noise
 from policies.learning.distributions.part import PartDistribution
 from policies.learning.distributions.parts import PartsDistribution
 
@@ -38,3 +38,11 @@ class DistributionHead(nn.Module):
                 for name, definition in self.definitions.items()
             }
         )
+
+    def noise(self, batch: int, device: Any) -> dict[str, Noise]:
+        """Noise state for `batch` environments, for parts whose distribution has one."""
+        return {
+            name: definition.noise(batch, device)
+            for name, definition in self.definitions.items()
+            if isinstance(definition, DistributionWithNoise)
+        }
